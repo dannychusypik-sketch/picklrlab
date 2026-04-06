@@ -21,6 +21,8 @@ import anthropic
 from slugify import slugify
 from supabase import create_client
 
+from download_article_image import download_image
+
 # ---------------------------------------------------------------------------
 # Logging
 # ---------------------------------------------------------------------------
@@ -152,12 +154,20 @@ Respond in EXACTLY this JSON format (no markdown fences, just raw JSON):
 # ---------------------------------------------------------------------------
 # Image Selection
 # ---------------------------------------------------------------------------
-def fetch_thumbnail(category: str, title: str) -> str:
-    """Select a relevant image URL based on article category and title."""
-    images = CATEGORY_IMAGES.get(category, DEFAULT_IMAGES)
+def fetch_thumbnail(category, title, source_image="", slug=""):
+    # type: (str, str, str, str) -> str
+    """
+    Download the source image locally if available; fall back to stock images.
+    Returns a local path like /images/articles/slug.jpg or an Unsplash URL.
+    """
+    # Try to download the actual source image first
+    if source_image and slug:
+        local_path = download_image(source_image, slug)
+        if local_path:
+            return local_path
 
-    # Use a hash of the title to deterministically pick an image
-    # so the same title always gets the same image, but different titles rotate
+    # Fallback: use stock category images
+    images = CATEGORY_IMAGES.get(category, DEFAULT_IMAGES)
     title_hash = int(hashlib.md5(title.encode()).hexdigest(), 16)
     idx = title_hash % len(images)
     return images[idx]
@@ -279,8 +289,13 @@ def generate_article(client, news_item: Dict) -> Optional[Dict]:
         # Add slug
         article["slug"] = slugify(article["title"])
 
-        # Select and prepend thumbnail image
-        image_url = fetch_thumbnail(category, article["title"])
+        # Select and prepend thumbnail image (prefer source image)
+        source_image = news_item.get("source_image", "")
+        image_url = fetch_thumbnail(
+            category, article["title"],
+            source_image=source_image,
+            slug=article["slug"],
+        )
         alt_text = article["title"].replace('"', "&quot;")
         image_html = (
             '<img src="{url}" alt="{alt}" '
@@ -289,6 +304,27 @@ def generate_article(client, news_item: Dict) -> Optional[Dict]:
             'loading="lazy" />'
         ).format(url=image_url, alt=alt_text)
         article["content"] = image_html + "\n" + article["content"]
+
+        # Embed video after first paragraph if source has video_url
+        video_url = news_item.get("video_url", "")
+        if video_url:
+            video_html = (
+                '<div class="video-embed">'
+                '<iframe src="{src}" width="100%" height="400" '
+                'frameborder="0" allowfullscreen></iframe>'
+                '</div>'
+            ).format(src=video_url)
+            # Insert after first </p> tag
+            first_p_end = article["content"].find("</p>")
+            if first_p_end != -1:
+                insert_pos = first_p_end + len("</p>")
+                article["content"] = (
+                    article["content"][:insert_pos]
+                    + "\n" + video_html + "\n"
+                    + article["content"][insert_pos:]
+                )
+            else:
+                article["content"] = article["content"] + "\n" + video_html
 
         # Generate JSON-LD schema
         article["schema_json"] = generate_schema_json(article, image_url)
@@ -335,6 +371,7 @@ def save_article(sb, article: Dict, source_url: str) -> bool:
         "excerpt": article["excerpt"],
         "content": article["content"],
         "category": article["category"],
+        "image_url": article.get("image_url", ""),
         "author": "PicklrLab Editorial",
         "published_at": now,
         "is_featured": False,
