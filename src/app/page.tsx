@@ -1,101 +1,66 @@
-import Image from "next/image";
+import { getPaddles, getArticles, getFeaturedArticles, getLiveMatches, getRankings, getMostReadArticles } from '@/lib/supabase'
+import Ticker from '@/components/layout/Ticker'
+import Nav from '@/components/layout/Nav'
+import Footer from '@/components/layout/Footer'
+import ScoresBar from '@/components/home/ScoresBar'
+import FeaturedStories from '@/components/home/FeaturedStories'
+import MoreStories from '@/components/home/MoreStories'
+import VideoHighlights from '@/components/home/VideoHighlights'
+import HomeRankings from '@/components/home/HomeRankings'
+import HomeReviews from '@/components/home/HomeReviews'
+import HomeNews from '@/components/home/HomeNews'
+import Newsletter from '@/components/home/Newsletter'
+import SectionHeader from '@/components/ui/SectionHeader'
+import SportBanner from '@/components/ui/SportBanner'
 
-export default function Home() {
+export default async function Home() {
+  const [paddles, articles, featuredArticles, mostReadArticles, matches, rankings] = await Promise.all([
+    getPaddles(),
+    getArticles(undefined, 20),
+    getFeaturedArticles(5),
+    getMostReadArticles(5),
+    getLiveMatches(),
+    getRankings('mens_singles'),
+  ])
+
+  const moreStories = articles.filter(a => !a.is_featured).slice(0, 6)
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <Ticker />
+      <Nav />
+      <ScoresBar matches={matches} />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+      {/* Featured Stories */}
+      <div className="max-w-site mx-auto px-5">
+        <SectionHeader title="Featured Stories" />
+      </div>
+      <FeaturedStories articles={featuredArticles} />
+
+      {/* More Stories */}
+      <div className="max-w-site mx-auto px-5">
+        <SectionHeader title="More Stories" href="/news" linkText="View All Stories →" />
+      </div>
+      <MoreStories articles={moreStories} />
+
+      {/* Rankings */}
+      <SportBanner label="WORLD RANKINGS" color="#0a5c36" />
+      <HomeRankings rankings={rankings} />
+
+      {/* Reviews */}
+      <SportBanner label="LAB REVIEWS" color="#d0021b" />
+      <HomeReviews paddles={paddles} />
+
+      {/* Video Highlights */}
+      <VideoHighlights />
+
+      {/* Latest News */}
+      <SportBanner label="LATEST NEWS" color="#000000" />
+      <HomeNews articles={articles} mostRead={mostReadArticles} />
+
+      {/* Newsletter + Footer */}
+      <Newsletter />
+      <Footer />
+    </>
+  )
 }
