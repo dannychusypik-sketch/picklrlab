@@ -52,9 +52,10 @@ export default async function ArticlePage({ params }: Props) {
 
   const readTime = estimateReadTime(article.content)
   const allArticles = await getArticles(undefined, 50)
-  const related = allArticles
-    .filter((a) => a.id !== article.id && a.category === article.category)
-    .slice(0, 3)
+  // Related: same category first, fill with other articles if not enough
+  const sameCategory = allArticles.filter((a) => a.id !== article.id && a.category === article.category)
+  const otherArticles = allArticles.filter((a) => a.id !== article.id && a.category !== article.category)
+  const related = [...sameCategory, ...otherArticles].slice(0, 6)
 
   return (
     <>
@@ -69,21 +70,6 @@ export default async function ArticlePage({ params }: Props) {
           <span>/</span>
           <span className="text-ink3">{article.category}</span>
         </nav>
-
-        {/* Hero image */}
-        {article.image_url ? (
-          <div className="rounded-lg overflow-hidden mb-6 max-w-[720px]">
-            <img
-              src={article.image_url}
-              alt={article.title}
-              className="w-full max-h-[400px] object-cover"
-            />
-          </div>
-        ) : (
-          <div className="rounded-lg overflow-hidden mb-6 max-w-[720px] h-[280px] bg-gradient-to-br from-navy via-blue to-ink flex items-center justify-center text-white/10 text-8xl font-condensed font-bold">
-            {article.category.charAt(0).toUpperCase()}
-          </div>
-        )}
 
         <article className="max-w-[720px]">
           <span className="font-condensed text-xs font-bold uppercase tracking-wider text-blue">
@@ -127,11 +113,11 @@ export default async function ArticlePage({ params }: Props) {
             </a>
           </div>
 
-          {/* Content */}
+          {/* Content — strip leading <img> to avoid duplicate with thumbnail */}
           {article.content ? (
             <div
               className="mt-6 text-[17px] leading-relaxed prose prose-neutral max-w-none"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+              dangerouslySetInnerHTML={{ __html: article.content.replace(/^\s*<img[^>]*>\s*/i, '') }}
             />
           ) : (
             <p className="mt-6 text-[17px] leading-relaxed text-ink3">
@@ -145,21 +131,26 @@ export default async function ArticlePage({ params }: Props) {
 
         {/* Related articles */}
         {related.length > 0 && (
-          <div className="mt-12 border-t border-border pt-8">
-            <h2 className="font-condensed text-lg font-bold uppercase tracking-wide mb-4">
-              Related Stories
-            </h2>
-            <div className="flex flex-wrap gap-4">
+          <div className="mt-12 border-t-2 border-ink pt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-condensed text-lg font-bold uppercase tracking-wide">
+                More Stories
+              </h2>
+              <Link href="/news" className="text-sm font-semibold text-blue hover:opacity-80">
+                View All News →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {related.map((r) => (
                 <Link
                   key={r.id}
                   href={`/news/${r.slug}`}
-                  className="w-[300px] bg-white border border-border rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-fast"
+                  className="group block border border-border rounded overflow-hidden hover:shadow-md transition-shadow"
                 >
                   {r.image_url ? (
                     <img src={r.image_url} alt={r.title} className="h-[140px] w-full object-cover" />
                   ) : (
-                    <div className="h-[140px] bg-gradient-to-br from-navy via-blue to-ink flex items-center justify-center text-white/10 text-4xl font-condensed font-bold">
+                    <div className="h-[140px] bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white/10 text-5xl font-condensed font-bold">
                       {r.category.charAt(0).toUpperCase()}
                     </div>
                   )}
@@ -167,7 +158,7 @@ export default async function ArticlePage({ params }: Props) {
                     <span className="font-condensed text-2xs font-bold uppercase tracking-wider text-blue">
                       {r.category}
                     </span>
-                    <h3 className="font-condensed text-sm font-bold uppercase leading-tight mt-1 line-clamp-3">
+                    <h3 className="font-body text-sm font-bold leading-snug mt-1 line-clamp-2 group-hover:text-blue">
                       {r.title}
                     </h3>
                   </div>

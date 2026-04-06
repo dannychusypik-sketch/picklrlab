@@ -73,7 +73,9 @@ export default async function Home() {
                   {article.image_url ? (
                     <img src={article.image_url} alt={article.title} className="w-full h-40 object-cover" />
                   ) : (
-                    <div className="w-full h-40 bg-gradient-to-br from-navy to-blue" />
+                    <div className="w-full h-40 bg-gradient-to-br from-blue to-navy flex items-center justify-center">
+                      <span className="text-white/30 text-5xl font-condensed font-bold">TIPS</span>
+                    </div>
                   )}
                   <div className="p-4">
                     <h3 className="font-body text-md font-bold leading-snug group-hover:text-blue line-clamp-2">{article.title}</h3>
