@@ -82,7 +82,7 @@ export async function getArticles(category?: string, limit = 20): Promise<Articl
   return withCache(`articles:${category || 'all'}:${limit}`, async () => {
     let q = supabase
       .from('articles')
-      .select('id,title,slug,category,excerpt,author,published_at,views,is_featured')
+      .select('id,title,slug,category,excerpt,author,published_at,views,is_featured,image_url')
       .not('published_at', 'is', null)
       .order('published_at', { ascending: false })
       .limit(limit)
@@ -109,7 +109,7 @@ export async function getFeaturedArticles(limit = 5): Promise<Article[]> {
   return withCache(`articles:featured:${limit}`, async () => {
     const { data } = await supabase
       .from('articles')
-      .select('id,title,slug,category,excerpt,author,published_at,views,is_featured')
+      .select('id,title,slug,category,excerpt,author,published_at,views,is_featured,image_url')
       .eq('is_featured', true)
       .not('published_at', 'is', null)
       .order('published_at', { ascending: false })

@@ -16,6 +16,7 @@ export interface Paddle {
 export interface Article {
   id: string; title: string; slug: string; category: string; excerpt?: string;
   content?: string; author: string; published_at?: string; is_featured: boolean; views: number;
+  image_url?: string;
 }
 export interface Match {
   id: string; tournament: string; round?: string; category?: string;
