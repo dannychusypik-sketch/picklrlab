@@ -4,7 +4,7 @@ import Nav from '@/components/layout/Nav'
 import Footer from '@/components/layout/Footer'
 import { getPlayers, getPlayerBySlug, getRankings } from '@/lib/supabase'
 import { countryFlag } from '@/lib/formatters'
-import { PersonSchema } from '@/components/seo/JsonLd'
+import { PersonSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -53,6 +53,11 @@ export default async function PlayerProfilePage({ params }: Props) {
   return (
     <>
       <PersonSchema player={player} />
+      <BreadcrumbSchema items={[
+        { name: 'Home', url: 'https://picklrlab.com' },
+        { name: 'Players', url: 'https://picklrlab.com/players' },
+        { name: player.name, url: `https://picklrlab.com/players/${player.slug}` },
+      ]} />
       <Nav />
       <main className="max-w-site mx-auto px-5 py-6">
         {/* Breadcrumb */}

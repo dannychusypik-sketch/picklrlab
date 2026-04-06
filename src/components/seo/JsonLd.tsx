@@ -98,6 +98,55 @@ export function EventSchema({ tournament }: { tournament: Tournament }) {
   )
 }
 
+export function FAQSchema({ questions }: { questions: { q: string; a: string }[] }) {
+  return (
+    <JsonLdScript
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: questions.map(({ q, a }) => ({
+          '@type': 'Question',
+          name: q,
+          acceptedAnswer: { '@type': 'Answer', text: a },
+        })),
+      }}
+    />
+  )
+}
+
+export function BreadcrumbSchema({ items }: { items: { name: string; url: string }[] }) {
+  return (
+    <JsonLdScript
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: items.map((item, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: item.name,
+          item: item.url,
+        })),
+      }}
+    />
+  )
+}
+
+export function SportsOrgSchema() {
+  return (
+    <JsonLdScript
+      data={{
+        '@context': 'https://schema.org',
+        '@type': 'SportsOrganization',
+        name: 'PicklrLab',
+        url: 'https://picklrlab.com',
+        description: "The world's #1 pickleball authority. Rankings, lab-tested reviews, and AI-powered tools.",
+        sport: 'Pickleball',
+        foundingDate: '2025',
+      }}
+    />
+  )
+}
+
 export function WebsiteSchema() {
   return (
     <JsonLdScript

@@ -4,7 +4,7 @@ import Nav from '@/components/layout/Nav'
 import Footer from '@/components/layout/Footer'
 import { getArticles, getArticleBySlug } from '@/lib/supabase'
 import ArticleViewCounter from '@/components/news/ArticleViewCounter'
-import { ArticleSchema } from '@/components/seo/JsonLd'
+import { ArticleSchema, BreadcrumbSchema } from '@/components/seo/JsonLd'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -60,6 +60,11 @@ export default async function ArticlePage({ params }: Props) {
   return (
     <>
       <ArticleSchema article={article} />
+      <BreadcrumbSchema items={[
+        { name: 'Home', url: 'https://picklrlab.com' },
+        { name: 'News', url: 'https://picklrlab.com/news' },
+        { name: article.title, url: `https://picklrlab.com/news/${article.slug}` },
+      ]} />
       <Nav />
       <main className="max-w-site mx-auto px-5 py-6">
         {/* Breadcrumb */}

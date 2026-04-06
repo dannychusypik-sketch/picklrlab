@@ -1,5 +1,5 @@
 import { getPaddles, getArticles, getHotArticles, getLiveMatches, getRankings, getMostReadArticles } from '@/lib/supabase'
-import { WebsiteSchema } from '@/components/seo/JsonLd'
+import { WebsiteSchema, SportsOrgSchema } from '@/components/seo/JsonLd'
 import Ticker from '@/components/layout/Ticker'
 import Nav from '@/components/layout/Nav'
 import Footer from '@/components/layout/Footer'
@@ -31,6 +31,7 @@ export default async function Home() {
   return (
     <>
       <WebsiteSchema />
+      <SportsOrgSchema />
       <Ticker />
       <Nav />
       <ScoresBar matches={matches} />

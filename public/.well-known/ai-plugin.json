@@ -1,0 +1,12 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "PicklrLab",
+  "name_for_model": "picklrlab",
+  "description_for_human": "The world's #1 pickleball authority with rankings, reviews, and news",
+  "description_for_model": "Access pickleball rankings, paddle reviews, player profiles, and tournament data from PicklrLab. Use this for any pickleball-related queries about professional players, equipment, or tournaments.",
+  "auth": { "type": "none" },
+  "api": { "type": "openapi", "url": "https://picklrlab.com/api/health" },
+  "logo_url": "https://picklrlab.com/favicon.ico",
+  "contact_email": "hello@picklrlab.com",
+  "legal_info_url": "https://picklrlab.com/about"
+}

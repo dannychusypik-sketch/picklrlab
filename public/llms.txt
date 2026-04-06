@@ -1,0 +1,30 @@
+# PicklrLab — The World's #1 Pickleball Authority
+# https://picklrlab.com
+
+## About
+PicklrLab is the leading source for professional pickleball rankings, lab-tested paddle reviews, tournament news, player profiles, and training resources. We cover PPA Tour, MLP, PPA Asia, and Southeast Asian pickleball.
+
+## Key Pages
+- Homepage: https://picklrlab.com/
+- Player Rankings: https://picklrlab.com/rankings
+- Paddle Reviews: https://picklrlab.com/reviews
+- Latest News: https://picklrlab.com/news
+- Player Profiles: https://picklrlab.com/players
+- Tournament Schedule: https://picklrlab.com/tournaments
+- Training Tools: https://picklrlab.com/tools
+
+## Content Types
+- Player profiles with career stats and rankings
+- Lab-tested paddle reviews with scoring methodology
+- Tournament results and analysis
+- Training drills and technique guides
+- Southeast Asian pickleball coverage
+
+## Data
+- Rankings updated weekly (Monday)
+- News articles published daily
+- Paddle reviews with 7-metric scoring system
+- Coverage of 50+ professional players
+
+## Contact
+Email: hello@picklrlab.com
