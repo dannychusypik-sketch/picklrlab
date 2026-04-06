@@ -1,6 +1,6 @@
 export interface Player {
   id: string; name: string; country: string; sponsor?: string; paddle?: string;
-  photo_url?: string; slug: string; bio?: string; birth_year?: number;
+  photo_url?: string; slug: string; bio?: string; bio_html?: string; birth_year?: number;
 }
 export interface Ranking {
   id: string; player_id: string; player?: Player; category: string;

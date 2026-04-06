@@ -249,23 +249,26 @@ export default async function PlayerProfilePage({ params }: Props) {
 
             {/* Right Column: Bio */}
             <div className="lg:col-span-2">
-              {player.bio && (
+              {(player.bio_html || player.bio) ? (
                 <div>
                   <h2 className="font-condensed text-xl font-bold uppercase tracking-wide mb-4">
                     Biography
                   </h2>
-                  {player.bio.includes('<') ? (
+                  {player.bio_html ? (
                     <div
-                      className="prose prose-sm max-w-none text-ink2 leading-relaxed [&_p]:mb-4 [&_a]:text-blue [&_a]:underline [&_h2]:font-condensed [&_h2]:text-lg [&_h2]:font-bold [&_h2]:uppercase [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:font-condensed [&_h3]:font-bold [&_h3]:mt-4 [&_h3]:mb-2"
+                      className="prose prose-neutral max-w-none text-ink2 leading-relaxed [&_p]:mb-4 [&_a]:text-blue [&_a]:underline [&_h2]:font-condensed [&_h2]:text-lg [&_h2]:font-bold [&_h2]:uppercase [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:font-condensed [&_h3]:font-bold [&_h3]:mt-4 [&_h3]:mb-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-4 [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-4 [&_li]:mb-1 [&_strong]:font-semibold"
+                      dangerouslySetInnerHTML={{ __html: player.bio_html }}
+                    />
+                  ) : player.bio && player.bio.includes('<') ? (
+                    <div
+                      className="prose prose-neutral max-w-none text-ink2 leading-relaxed [&_p]:mb-4 [&_a]:text-blue [&_a]:underline [&_h2]:font-condensed [&_h2]:text-lg [&_h2]:font-bold [&_h2]:uppercase [&_h2]:mt-6 [&_h2]:mb-2 [&_h3]:font-condensed [&_h3]:font-bold [&_h3]:mt-4 [&_h3]:mb-2"
                       dangerouslySetInnerHTML={{ __html: player.bio }}
                     />
                   ) : (
                     <p className="text-base text-ink2 leading-relaxed">{player.bio}</p>
                   )}
                 </div>
-              )}
-
-              {!player.bio && (
+              ) : (
                 <div className="text-center py-12 text-ink4">
                   <p className="text-lg">No biography available yet.</p>
                   <p className="text-sm mt-2">Check back later for more information about {player.name}.</p>
