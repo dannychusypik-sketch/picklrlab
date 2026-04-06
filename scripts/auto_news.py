@@ -155,14 +155,11 @@ def save_article(sb, article: dict, source_url: str):
         "slug": article["slug"],
         "excerpt": article["excerpt"],
         "content": article["content"],
-        "meta_description": article["meta_description"],
         "category": article["category"],
-        "source_url": source_url,
-        "status": "published",
-        "auto_generated": True,
+        "author": "PicklrLab AI",
         "published_at": now,
-        "created_at": now,
-        "updated_at": now,
+        "is_featured": False,
+        "views": 0,
     }
 
     try:
