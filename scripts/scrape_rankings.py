@@ -184,7 +184,7 @@ def generate_mock_rankings(category: str, count: int = 50) -> tuple[list[dict], 
     rankings = []
     used_names = set()
 
-    period = datetime.now(timezone.utc).strftime("%Y-%m")
+    period = datetime.now(timezone.utc).strftime("%Y-%m-01")
 
     for rank in range(1, count + 1):
         # Build unique name
