@@ -1,4 +1,4 @@
-import { getPaddles, getArticles, getFeaturedArticles, getLiveMatches, getRankings, getMostReadArticles } from '@/lib/supabase'
+import { getPaddles, getArticles, getHotArticles, getLiveMatches, getRankings, getMostReadArticles } from '@/lib/supabase'
 import { WebsiteSchema } from '@/components/seo/JsonLd'
 import Ticker from '@/components/layout/Ticker'
 import Nav from '@/components/layout/Nav'
@@ -13,15 +13,17 @@ import HomeNews from '@/components/home/HomeNews'
 import Newsletter from '@/components/home/Newsletter'
 import SectionHeader from '@/components/ui/SectionHeader'
 import SportBanner from '@/components/ui/SportBanner'
+import Link from 'next/link'
 
 export default async function Home() {
-  const [paddles, articles, featuredArticles, mostReadArticles, matches, rankings] = await Promise.all([
+  const [paddles, articles, hotArticles, mostReadArticles, matches, rankings, trainingArticles] = await Promise.all([
     getPaddles(),
     getArticles(undefined, 20),
-    getFeaturedArticles(5),
+    getHotArticles(5),
     getMostReadArticles(5),
     getLiveMatches(),
     getRankings('mens_singles'),
+    getArticles('training', 6),
   ])
 
   const moreStories = articles.filter(a => !a.is_featured).slice(0, 6)
@@ -37,7 +39,7 @@ export default async function Home() {
       <div className="max-w-site mx-auto px-5">
         <SectionHeader title="Featured Stories" />
       </div>
-      <FeaturedStories articles={featuredArticles} />
+      <FeaturedStories articles={hotArticles} />
 
       {/* More Stories */}
       <div className="max-w-site mx-auto px-5">
@@ -59,6 +61,32 @@ export default async function Home() {
       {/* Latest News */}
       <SportBanner label="LATEST NEWS" color="#000000" />
       <HomeNews articles={articles} mostRead={mostReadArticles} />
+
+      {/* Training & Tips */}
+      {trainingArticles.length > 0 && (
+        <>
+          <SportBanner label="TRAINING & TIPS" color="#0059b5" />
+          <div className="max-w-site mx-auto px-5 py-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {trainingArticles.map(article => (
+                <Link key={article.id} href={`/news/${article.slug}`} className="group block bg-bg2 rounded overflow-hidden hover:shadow-md transition-shadow">
+                  {article.image_url ? (
+                    <img src={article.image_url} alt={article.title} className="w-full h-40 object-cover" />
+                  ) : (
+                    <div className="w-full h-40 bg-gradient-to-br from-navy to-blue" />
+                  )}
+                  <div className="p-4">
+                    <h3 className="font-body text-md font-bold leading-snug group-hover:text-blue line-clamp-2">{article.title}</h3>
+                    {article.excerpt && (
+                      <p className="text-xs text-ink4 mt-1.5 line-clamp-2">{article.excerpt}</p>
+                    )}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Newsletter + Footer */}
       <Newsletter />

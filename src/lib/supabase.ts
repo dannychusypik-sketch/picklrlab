@@ -118,6 +118,20 @@ export async function getFeaturedArticles(limit = 5): Promise<Article[]> {
   }, 300)
 }
 
+export async function getHotArticles(limit = 5): Promise<Article[]> {
+  if (isPlaceholder) return seedArticles.filter(a => a.is_featured && a.category !== 'training').slice(0, limit)
+  return withCache('articles:hot:' + limit, async () => {
+    const { data } = await supabase
+      .from('articles')
+      .select('id,title,slug,category,excerpt,author,published_at,views,is_featured,image_url')
+      .not('published_at', 'is', null)
+      .neq('category', 'training')
+      .order('views', { ascending: false })
+      .limit(limit)
+    return data ?? []
+  }, 300)
+}
+
 export async function getMostReadArticles(limit = 5): Promise<Pick<Article, 'id' | 'title' | 'slug' | 'category' | 'views'>[]> {
   if (isPlaceholder) return seedMostRead.slice(0, limit)
   return withCache(`articles:mostread:${limit}`, async () => {

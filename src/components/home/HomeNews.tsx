@@ -30,10 +30,11 @@ export default function HomeNews({
 }) {
   const [activeTab, setActiveTab] = useState('All')
 
+  const nonTraining = articles.filter((a) => a.category !== 'training')
   const filtered =
     activeTab === 'All'
-      ? articles
-      : articles.filter((a) => a.category === activeTab)
+      ? nonTraining
+      : nonTraining.filter((a) => a.category === activeTab)
 
   return (
     <div className="max-w-site mx-auto px-5 py-6">

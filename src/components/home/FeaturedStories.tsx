@@ -8,7 +8,7 @@ const gradients = [
 ]
 
 export default function FeaturedStories({ articles }: { articles: Article[] }) {
-  const items = articles.slice(0, 3)
+  const items = articles.filter(a => a.category !== 'training').slice(0, 3)
   if (!items.length) return null
 
   return (
