@@ -70,6 +70,21 @@ export default async function ArticlePage({ params }: Props) {
           <span className="text-ink3">{article.category}</span>
         </nav>
 
+        {/* Hero image */}
+        {article.image_url ? (
+          <div className="rounded-lg overflow-hidden mb-6 max-w-[720px]">
+            <img
+              src={article.image_url}
+              alt={article.title}
+              className="w-full max-h-[400px] object-cover"
+            />
+          </div>
+        ) : (
+          <div className="rounded-lg overflow-hidden mb-6 max-w-[720px] h-[280px] bg-gradient-to-br from-navy via-blue to-ink flex items-center justify-center text-white/10 text-8xl font-condensed font-bold">
+            {article.category.charAt(0).toUpperCase()}
+          </div>
+        )}
+
         <article className="max-w-[720px]">
           <span className="font-condensed text-xs font-bold uppercase tracking-wider text-blue">
             {article.category}
@@ -141,7 +156,13 @@ export default async function ArticlePage({ params }: Props) {
                   href={`/news/${r.slug}`}
                   className="w-[300px] bg-white border border-border rounded-lg overflow-hidden hover:shadow-md transition-shadow duration-fast"
                 >
-                  <div className="h-[140px] bg-gradient-to-br from-navy via-blue to-ink" />
+                  {r.image_url ? (
+                    <img src={r.image_url} alt={r.title} className="h-[140px] w-full object-cover" />
+                  ) : (
+                    <div className="h-[140px] bg-gradient-to-br from-navy via-blue to-ink flex items-center justify-center text-white/10 text-4xl font-condensed font-bold">
+                      {r.category.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                   <div className="p-3">
                     <span className="font-condensed text-2xs font-bold uppercase tracking-wider text-blue">
                       {r.category}

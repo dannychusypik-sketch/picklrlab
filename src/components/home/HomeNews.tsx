@@ -7,6 +7,20 @@ import { formatDistanceToNow } from 'date-fns'
 
 const tabs = ['All', 'PPA Tour', 'MLP', 'Gear', 'International', 'Tips']
 
+function ArticleThumbnail({ article }: { article: Article }) {
+  return article.image_url ? (
+    <img
+      src={article.image_url}
+      alt={article.title}
+      className="w-[80px] h-[56px] rounded object-cover shrink-0"
+    />
+  ) : (
+    <div className="w-[80px] h-[56px] rounded shrink-0 bg-gradient-to-br from-navy to-blue flex items-center justify-center text-white/10 text-2xl font-condensed font-bold">
+      {article.category.charAt(0).toUpperCase()}
+    </div>
+  )
+}
+
 export default function HomeNews({
   articles,
   mostRead,
@@ -49,6 +63,7 @@ export default function HomeNews({
               href={`/news/${article.slug}`}
               className="group flex gap-4 py-3.5 border-b border-bd2 hover:bg-bg2 transition-colors"
             >
+              <ArticleThumbnail article={article} />
               <div className="flex-1 min-w-0">
                 <p className="text-2xs text-ink4 uppercase tracking-wide font-semibold mb-1">
                   {article.category}
