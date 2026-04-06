@@ -53,9 +53,18 @@ export default function HomeRankings({ rankings }: { rankings: Ranking[] }) {
               <tr key={r.id} className="border-b border-bd2 hover:bg-bg2 transition-colors">
                 <td className="py-2.5 font-mono font-bold text-ink4">{r.rank}</td>
                 <td className="py-2.5">
-                  <Link href={`/players/${r.player?.slug || ''}`} className="flex items-center gap-2 hover:text-blue">
-                    <span>{r.player ? countryFlag(r.player.country) : ''}</span>
-                    <span className="font-body font-semibold">{r.player?.name || 'Unknown'}</span>
+                  <Link href={`/players/${r.player?.slug || ''}`} className="flex items-center gap-2.5 hover:text-blue">
+                    {r.player?.photo_url ? (
+                      <img src={r.player.photo_url} alt={r.player.name} className="w-9 h-9 rounded-full object-cover bg-bg3" />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-bg3 flex items-center justify-center text-xs font-bold text-ink4">
+                        {r.player?.name?.charAt(0)}
+                      </div>
+                    )}
+                    <div>
+                      <div className="font-bold text-sm">{r.player?.name || 'Unknown'}</div>
+                      <div className="text-xs text-ink4">{r.player ? countryFlag(r.player.country) : ''} {r.player?.sponsor && `· ${r.player.sponsor}`}</div>
+                    </div>
                   </Link>
                 </td>
                 <td className="py-2.5 text-right font-mono">{r.points.toLocaleString()}</td>

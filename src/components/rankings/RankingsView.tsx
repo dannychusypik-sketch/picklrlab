@@ -129,7 +129,21 @@ export default function RankingsView({ rankings }: { rankings: Ranking[] }) {
                 <td className="py-2.5 px-2 font-semibold">{r.points.toLocaleString()}</td>
                 <td className="py-2.5 px-2">{r.win_rate != null ? `${r.win_rate}%` : '-'}</td>
                 <td className="py-2.5 px-2">{r.titles}</td>
-                <td className="py-2.5 px-2 font-semibold">{r.player?.name ?? 'Unknown'}</td>
+                <td className="py-2.5 px-2">
+                  <div className="flex items-center gap-2.5">
+                    {r.player?.photo_url ? (
+                      <img src={r.player.photo_url} alt={r.player.name} className="w-9 h-9 rounded-full object-cover bg-bg3" />
+                    ) : (
+                      <div className="w-9 h-9 rounded-full bg-bg3 flex items-center justify-center text-xs font-bold text-ink4">
+                        {r.player?.name?.charAt(0)}
+                      </div>
+                    )}
+                    <div>
+                      <div className="font-bold text-sm">{r.player?.name ?? 'Unknown'}</div>
+                      <div className="text-xs text-ink4">{r.player?.country} {r.player?.sponsor && `· ${r.player.sponsor}`}</div>
+                    </div>
+                  </div>
+                </td>
                 <td className="py-2.5 px-2">
                   {r.player?.country && (
                     <span>{countryFlag(r.player.country)} {r.player.country}</span>
