@@ -8,6 +8,8 @@ import { countryFlag } from '@/lib/formatters'
 const categories = [
   { key: 'mens_singles', label: "Men's Singles" },
   { key: 'womens_singles', label: "Women's Singles" },
+  { key: 'mens_doubles', label: "Men's Doubles" },
+  { key: 'womens_doubles', label: "Women's Doubles" },
   { key: 'mixed_doubles', label: 'Mixed Doubles' },
 ]
 
