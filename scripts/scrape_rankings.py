@@ -100,8 +100,7 @@ def save_to_supabase(players: list[dict], rankings: list[dict]):
             "name": p["name"],
             "country": p["country"],
             "paddle": p.get("paddle", ""),
-            "avatar_url": p.get("avatar_url", ""),
-            "updated_at": now,
+            "photo_url": p.get("photo_url", ""),
         })
 
     if player_rows:
@@ -130,15 +129,19 @@ def save_to_supabase(players: list[dict], rankings: list[dict]):
             "rank": r["rank"],
             "points": r["points"],
             "win_rate": r["win_rate"],
-            "updated_at": now,
+            "titles": r.get("titles", 0),
+            "delta": r.get("delta", 0),
         })
 
     if ranking_rows:
-        log.info("Upserting %d rankings...", len(ranking_rows))
-        sb.table("rankings").upsert(
-            ranking_rows, on_conflict="player_id,category,period"
-        ).execute()
-        log.info("Rankings upserted OK")
+        # Delete old rankings for this category+period, then insert fresh
+        category = ranking_rows[0]["category"]
+        period = ranking_rows[0]["period"]
+        log.info("Clearing old %s rankings for %s...", category, period)
+        sb.table("rankings").delete().eq("category", category).eq("period", period).execute()
+        log.info("Inserting %d rankings...", len(ranking_rows))
+        sb.table("rankings").insert(ranking_rows).execute()
+        log.info("Rankings inserted OK")
 
 
 # ---------------------------------------------------------------------------
@@ -206,7 +209,7 @@ def generate_mock_rankings(category: str, count: int = 50) -> tuple[list[dict], 
             "name": full,
             "country": country,
             "paddle": paddle,
-            "avatar_url": "",
+            "photo_url": "",
         })
 
         rankings.append({
