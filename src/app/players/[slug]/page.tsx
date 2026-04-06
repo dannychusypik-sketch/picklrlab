@@ -12,7 +12,7 @@ interface Props {
 
 export async function generateStaticParams() {
   const players = await getPlayers()
-  return players.map((p) => ({ slug: p.slug }))
+  return players.slice(0, 10).map((p) => ({ slug: p.slug }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -11,7 +11,7 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const articles = await getArticles(undefined, 50)
+  const articles = await getArticles(undefined, 10)
   return articles.map((a) => ({ slug: a.slug }))
 }
 
