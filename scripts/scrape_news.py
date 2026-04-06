@@ -31,6 +31,9 @@ DINK_KEY = "5b252543f0374235fec6fad8b5"
 # ── PPA Tour AJAX API ──────────────────────────────────────────
 PPA_AJAX = "https://www.ppatour.com/wp-admin/admin-ajax.php"
 
+# ── PPA Tour WordPress REST API (via Flywheel CDN) ───────────
+PPA_WP_API = "https://propb.flywheelsites.com/wp-json/wp/v2/posts"
+
 # ── RSS Feed Sources ──────────────────────────────────────────
 RSS_SOURCES = [
     {
@@ -47,6 +50,11 @@ RSS_SOURCES = [
         "name": "pickleballeffect",
         "label": "Pickleball Effect",
         "feed_url": "https://pickleballeffect.com/feed/",
+    },
+    {
+        "name": "asiapickleball",
+        "label": "Asia Pickleball Federation",
+        "feed_url": "https://asiapickleball.org/feed/",
     },
 ]
 
@@ -281,6 +289,77 @@ def fetch_rss_articles(source_config, limit=15):
         return []
 
 
+# ── PPA Tour WordPress REST API ───────────────────────────────
+def fetch_ppa_wp_articles(limit=20):
+    # type: (int) -> List[Dict]
+    """Fetch real articles from PPA Tour via WordPress REST API."""
+    log.info("Fetching from PPA Tour WordPress API (limit=%d)...", limit)
+    try:
+        resp = requests.get(
+            PPA_WP_API,
+            params={
+                "per_page": limit,
+                "_fields": "id,date,title,slug,excerpt,link",
+            },
+            headers=HEADERS,
+            timeout=15,
+        )
+        resp.raise_for_status()
+        posts = resp.json()
+        log.info("Got %d posts from PPA Tour WP API", len(posts))
+
+        articles = []
+        for post in posts:
+            # Extract title (WordPress returns {rendered: "..."})
+            title_data = post.get("title", {})
+            if isinstance(title_data, dict):
+                title = title_data.get("rendered", "").strip()
+            else:
+                title = str(title_data).strip()
+
+            if not title:
+                continue
+
+            # Extract excerpt
+            excerpt_data = post.get("excerpt", {})
+            if isinstance(excerpt_data, dict):
+                excerpt_html = excerpt_data.get("rendered", "")
+            else:
+                excerpt_html = str(excerpt_data)
+            excerpt = strip_html(excerpt_html)[:300]
+
+            # Parse date
+            published_at = post.get("date", "")
+            if published_at and "T" in published_at:
+                published_at = published_at + "+00:00"
+
+            # Build source URL from link or slug
+            link = post.get("link", "")
+            if not link:
+                slug = post.get("slug", "")
+                link = "https://www.ppatour.com/%s/" % slug if slug else ""
+
+            category = detect_category(title)
+
+            articles.append({
+                "title": title,
+                "excerpt": excerpt,
+                "source_url": link,
+                "source_image": "",
+                "video_url": None,
+                "published_at": published_at,
+                "category": category,
+                "source": "ppa_tour",
+                "tags": ["ppa", "tour"],
+            })
+
+        return articles
+
+    except Exception as e:
+        log.warning("Failed to fetch from PPA Tour WP API: %s", e)
+        return []
+
+
 # ── PPA Tour Rankings ─────────────────────────────────────────
 def fetch_ppa_rankings_news():
     # type: () -> List[Dict]
@@ -367,7 +446,12 @@ def main():
         all_articles.extend(rss_articles)
         source_counts[rss_src["name"]] = len(rss_articles)
 
-    # 3. PPA Tour — rankings news
+    # 3. PPA Tour — WordPress REST API (blog posts)
+    ppa_wp_articles = fetch_ppa_wp_articles(args.limit)
+    all_articles.extend(ppa_wp_articles)
+    source_counts["ppa_tour"] = len(ppa_wp_articles)
+
+    # 4. PPA Tour — rankings news
     ppa_articles = fetch_ppa_rankings_news()
     all_articles.extend(ppa_articles)
     source_counts["ppa"] = len(ppa_articles)
