@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Nav from '@/components/layout/Nav'
 import Footer from '@/components/layout/Footer'
 import { getPaddles, getPaddleBySlug } from '@/lib/supabase'
+import { ProductSchema } from '@/components/seo/JsonLd'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -66,6 +67,7 @@ export default async function ReviewDetailPage({ params }: Props) {
 
   return (
     <>
+      <ProductSchema paddle={paddle} />
       <Nav />
       <main className="max-w-site mx-auto px-5 py-6">
         {/* Breadcrumb */}

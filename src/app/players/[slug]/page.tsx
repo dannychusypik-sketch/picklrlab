@@ -4,6 +4,7 @@ import Nav from '@/components/layout/Nav'
 import Footer from '@/components/layout/Footer'
 import { getPlayers, getPlayerBySlug, getRankings } from '@/lib/supabase'
 import { countryFlag } from '@/lib/formatters'
+import { PersonSchema } from '@/components/seo/JsonLd'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -51,6 +52,7 @@ export default async function PlayerProfilePage({ params }: Props) {
 
   return (
     <>
+      <PersonSchema player={player} />
       <Nav />
       <main className="max-w-site mx-auto px-5 py-6">
         {/* Breadcrumb */}
