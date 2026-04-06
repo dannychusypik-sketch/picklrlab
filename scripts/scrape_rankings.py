@@ -63,9 +63,9 @@ LAST_NAMES = [
     "Braverman", "Smith", "Daescu", "Tereschenko", "Jardim", "Bar",
 ]
 COUNTRIES = [
-    "USA", "USA", "USA", "USA", "USA", "USA", "USA",  # weighted
-    "Canada", "Spain", "Brazil", "Romania", "Italy", "Australia",
-    "Japan", "France", "Germany", "Colombia", "Argentina",
+    "US", "US", "US", "US", "US", "US", "US",  # weighted
+    "CA", "ES", "BR", "RO", "IT", "AU",
+    "JP", "FR", "DE", "CO", "AR", "GB", "VN", "TH", "PH",
 ]
 PADDLES = [
     "Joola Hyperion CFS 16", "Selkirk Vanguard Power Air", "Franklin Signature",
