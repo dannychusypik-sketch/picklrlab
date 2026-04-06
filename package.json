@@ -10,13 +10,16 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.82.0",
+    "@sanity/image-url": "^2.1.1",
     "@supabase/supabase-js": "^2.101.1",
     "@upstash/redis": "^1.37.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.38.0",
     "next": "14.2.35",
+    "next-sanity": "^12.2.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sanity": "^5.19.0"
   },
   "devDependencies": {
     "@types/node": "^20",

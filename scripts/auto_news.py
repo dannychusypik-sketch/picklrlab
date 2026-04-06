@@ -86,12 +86,12 @@ def get_claude():
 # ---------------------------------------------------------------------------
 # Article generation
 # ---------------------------------------------------------------------------
-def generate_article(client: anthropic.Anthropic, news_item: dict) -> dict | None:
+def generate_article(client, news_item: dict):
     """Call Claude to generate a full article from a news item."""
     prompt = ARTICLE_PROMPT.format(
         title=news_item["title"],
-        source_name=news_item.get("source_name", "Unknown"),
-        snippet=news_item.get("snippet", ""),
+        source_name=news_item.get("source", news_item.get("source_name", "Unknown")),
+        snippet=news_item.get("excerpt", news_item.get("snippet", "")),
         category=news_item.get("category", "general"),
     )
 
