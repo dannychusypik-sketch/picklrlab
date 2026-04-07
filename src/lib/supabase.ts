@@ -35,6 +35,17 @@ export async function getRankings(category: string): Promise<Ranking[]> {
   }, 600) // 10 min cache
 }
 
+export async function getAllRankings(): Promise<Ranking[]> {
+  if (isPlaceholder) return seedRankings
+  return withCache('rankings:all', async () => {
+    const { data } = await supabase
+      .from('rankings')
+      .select('*, player:players(name, country, sponsor, paddle, photo_url, slug)')
+      .order('rank')
+    return data ?? []
+  }, 600)
+}
+
 // ---- Paddles -------------------------------------------------
 export async function getPaddles(): Promise<Paddle[]> {
   if (isPlaceholder) return seedPaddles

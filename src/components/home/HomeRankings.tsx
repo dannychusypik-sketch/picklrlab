@@ -10,7 +10,8 @@ const categories = [
   { key: 'womens_singles', label: "Women's Singles" },
   { key: 'mens_doubles', label: "Men's Doubles" },
   { key: 'womens_doubles', label: "Women's Doubles" },
-  { key: 'mixed_doubles', label: 'Mixed Doubles' },
+  { key: 'mixed_doubles', label: "Men's Mixed" },
+  { key: 'womens_mixed_doubles', label: "Women's Mixed" },
 ]
 
 export default function HomeRankings({ rankings }: { rankings: Ranking[] }) {

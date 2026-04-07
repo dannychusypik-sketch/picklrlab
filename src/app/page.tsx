@@ -1,4 +1,4 @@
-import { getPaddles, getArticles, getHotArticles, getLiveMatches, getRankings, getMostReadArticles } from '@/lib/supabase'
+import { getPaddles, getArticles, getHotArticles, getLiveMatches, getAllRankings, getMostReadArticles } from '@/lib/supabase'
 import { WebsiteSchema, SportsOrgSchema } from '@/components/seo/JsonLd'
 import Ticker from '@/components/layout/Ticker'
 import Nav from '@/components/layout/Nav'
@@ -22,7 +22,7 @@ export default async function Home() {
     getHotArticles(5),
     getMostReadArticles(5),
     getLiveMatches(),
-    getRankings('mens_singles'),
+    getAllRankings(),
     getArticles('training', 6),
   ])
 
